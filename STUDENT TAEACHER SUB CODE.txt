@@ -1,0 +1,3 @@
+teaches(mr_smith, math101, john).
+teaches(ms_jane, phy101, mary).
+teaches(mr_lee, chem101, alex).
