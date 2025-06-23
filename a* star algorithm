@@ -1,0 +1,62 @@
+import heapq
+
+def a_star(graph, heuristics, start, goal):
+    open_list = []
+    heapq.heappush(open_list, (0 + heuristics[start], 0, start, [start]))  # (f = g + h, g, node, path)
+
+    visited = set()
+
+    while open_list:
+        f, g, current, path = heapq.heappop(open_list)
+
+        if current == goal:
+            print(f"Total Cost: {g}")
+            return path
+
+        if current in visited:
+            continue
+        visited.add(current)
+
+        for neighbor, cost in graph.get(current, []):
+            if neighbor not in visited:
+                new_g = g + cost
+                new_f = new_g + heuristics[neighbor]
+                heapq.heappush(open_list, (new_f, new_g, neighbor, path + [neighbor]))
+
+    return None
+
+# --------- User Input ---------
+
+# Example Graph Input
+print("Enter nodes separated by space (e.g., A B C D):")
+nodes = input().split()
+graph = {}
+
+print("Enter neighbors and costs for each node as: node neighbor cost (e.g., A B 1), type 'done' to finish:")
+while True:
+    inp = input()
+    if inp.lower() == 'done':
+        break
+    node, neighbor, cost = inp.split()
+    cost = int(cost)
+    graph.setdefault(node, []).append((neighbor, cost))
+
+# Heuristics input
+heuristics = {}
+print("Enter heuristic values for each node as: node heuristic")
+for node in nodes:
+    h = int(input(f"Heuristic for {node}: "))
+    heuristics[node] = h
+
+# Start and Goal
+start = input("Enter start node: ")
+goal = input("Enter goal node: ")
+
+# --------- Run A* ---------
+path = a_star(graph, heuristics, start, goal)
+
+# --------- Output ---------
+if path:
+    print("Shortest path found:", " → ".join(path))
+else:
+    print("No path found.")
